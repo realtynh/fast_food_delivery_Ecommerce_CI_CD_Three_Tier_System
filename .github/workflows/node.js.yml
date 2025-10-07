@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./fast_food_delivery_Ecommerce_CI_CD_Three_Tier_System/backend
+        working-directory: ./Fast_Food_Delivery/backend
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
@@ -45,7 +45,7 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
     defaults:
       run:
-        working-directory: ./fast_food_delivery_Ecommerce_CI_CD_Three_Tier_System/frontend
+        working-directory: ./Fast_Food_Delivery/frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -67,7 +67,7 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
     defaults:
       run:
-        working-directory: ./fast_food_delivery_Ecommerce_CI_CD_Three_Tier_System/admin
+        working-directory: ./Fast_Food_Delivery/admin
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
