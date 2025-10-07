@@ -68,7 +68,7 @@ jobs:
       - name: Deploy frontend to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./Fast_Food_Delivery/frontend/build
       
   admin:
