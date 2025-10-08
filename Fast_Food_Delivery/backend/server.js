@@ -15,26 +15,26 @@ const port = 4000
 
 //------------------------------------
 //  CORS cấu hình cụ thể cho GitHub Pages
-const allowedOrigins = [
-  "https://realtynh.github.io",
-  "https://fast-food-delivery-ecommerce-ci-cd.vercel.app"
-];
+// const allowedOrigins = [
+//   "https://realtynh.github.io",
+//   "https://fast-food-delivery-ecommerce-ci-cd.vercel.app"
+// ];
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
+// app.use((req, res, next) => {
+//   const origin = req.headers.origin;
+//   if (allowedOrigins.includes(origin)) {
+//     res.header("Access-Control-Allow-Origin", origin);
+//   }
+//   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.header("Access-Control-Allow-Credentials", "true");
 
-  // ✅ Đáp lại preflight request (OPTIONS)
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-  next();
-});
+//   // ✅ Đáp lại preflight request (OPTIONS)
+//   if (req.method === "OPTIONS") {
+//     return res.sendStatus(200);
+//   }
+//   next();
+// });
 // -----------------------------------
 
 //middleware
