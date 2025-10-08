@@ -92,6 +92,6 @@ jobs:
         with:
           github_token: ${{ secrets.GH_TOKEN }}           # token PAT
           #publish_dir: ./Fast_Food_Delivery/frontend/build
-          publish_dir: ./build
+          publish_dir: ./Fast_Food_Delivery/frontend/dist
           user_name: realtynh
           user_email: ntt23042004@gmail.com
