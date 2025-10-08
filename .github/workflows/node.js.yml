@@ -34,8 +34,8 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_USER_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_BACKEND }}
           working-directory: ./Fast_Food_Delivery/backend
-          vercel-args: "--prod"
-
+          production: true
+         # vercel-args: "--prod"
 
   # ================= Admin =================
   admin:
@@ -65,7 +65,8 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_USER_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./Fast_Food_Delivery/admin
-          vercel-args: "--prod"
+          #vercel-args: "--prod"
+          production: true
   # ================= Frontend =================
   frontend:
     runs-on: ubuntu-latest
