@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const url ="http://localhost:4000"
-  //const url ="https://backend-2ooxzr97q-detoxs-projects-f3072630.vercel.app"
+  //const url ="https://fast-food-delivery-ecommerce-ci-cd-three.onrender.com"
   return (
     <div>
       <ToastContainer/>
