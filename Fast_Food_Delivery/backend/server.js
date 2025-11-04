@@ -14,30 +14,6 @@ import healthRoute from "./routes/healthRoute.js"
 const app = express()
 const port = process.env.PORT || 4000;
 
-//------------------------------------
-//  CORS cấu hình cụ thể cho GitHub Pages
-// const allowedOrigins = [
-//   "https://realtynh.github.io",
-//   "https://fast-food-delivery-ecommerce-ci-cd.vercel.app"
-// ];
-
-// app.use((req, res, next) => {
-//   const origin = req.headers.origin;
-//   if (allowedOrigins.includes(origin)) {
-//     res.header("Access-Control-Allow-Origin", origin);
-//   }
-//   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   res.header("Access-Control-Allow-Credentials", "true");
-
-//   // ✅ Đáp lại preflight request (OPTIONS)
-//   if (req.method === "OPTIONS") {
-//     return res.sendStatus(200);
-//   }
-//   next();
-// });
-// -----------------------------------
-
 //middleware
 app.use(express.json())
 app.use(cors())
@@ -57,8 +33,20 @@ app.use("/health",healthRoute)
 app.get("/",(req,res)=> {
     res.send("API Working")
 })
-app.listen(port,()=>{
-    console.log(`Server Started on http://localhost:${port}`)
-})
+
+// export default app;
+
+// app.listen(port,()=>{
+//     console.log(`Server Started on http://localhost:${port}`)
+// })
+
+if (process.env.NODE_ENV !== "test") {
+    app.listen(port, () => {
+        console.log(`Server Started`);
+    });
+}
+
+export default app;
+
 
 //mongodb+srv://ThanhTinh:57819234@cluster0.qp2vzrq.mongodb.net/?
