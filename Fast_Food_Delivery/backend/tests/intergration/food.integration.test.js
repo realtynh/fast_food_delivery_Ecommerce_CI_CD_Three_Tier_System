@@ -68,3 +68,13 @@
 //     expect(res.body).toEqual({ success: false, message: 'error' });
 //   });
 // });
+
+import request from "supertest";
+import app from "../../server.js";
+
+describe("Food Integration Tests", () => {
+  test("should return 200 OK", async () => {
+    const res = await request(app).get("/api/food");
+    expect(res.statusCode).toBe(200);
+  });
+});
