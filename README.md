@@ -60,7 +60,6 @@ Install dependencies (backend)
 Setup Environment Vaiables
 ```bash
   JWT_SECRET=YOUR_SECRET_TEXT
-  SALT=YOUR_SALT_VALUE
   MONGO_URL=YOUR_DATABASE_URL
   STRIPE_SECRET_KEY=YOUR_KEY
 ```
