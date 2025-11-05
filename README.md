@@ -25,4 +25,4 @@ This repository hosts the source code for TOMATO, a dynamic food ordering websit
 
 ## Screenshots
 
-![Home Page(Alt Text)]()
+![Home Page](./PicDemo/homePage.png)
