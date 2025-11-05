@@ -65,4 +65,32 @@ Setup Environment Vaiables
   STRIPE_SECRET_KEY=YOUR_KEY
 ```
 Setup the Frontend and Backend URL
+* App.jsx in Admin folder const url = YOUR_BACKEND_URL
+* StoreContext.js in Frontend folder const url = YOUR_BACKEND_URL
+* orderController in Backend folder const frontend_url = YOUR_FRONTEND_URL
+
+Start the Backend server
+```bash
+    nodemon server.js
+```
+Start the Frontend server
+```bash
+    npm run dev
+```
+Start the Backend server
+```bash
+    npm run dev
+```
+# Tech Stack
+* [React](https://react.dev/)
+* [Nodejs](https://nodejs.org/en)
+* [ExpressJs](https://expressjs.com/)
+* [Mongodb](https://www.mongodb.com/)
+* [Stripe](https://stripe.com/)
+* [JWT-Authentication](https://www.jwt.io/introduction)
+* [Multer](https://www.npmjs.com/package/multer)
+
+# Deployment
+The application is deployed on Render.
+
 
