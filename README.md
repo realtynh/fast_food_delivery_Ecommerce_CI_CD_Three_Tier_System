@@ -33,3 +33,10 @@ This repository hosts the source code for TOMATO, a dynamic food ordering websit
 * Menu Section
 ![Cart Section](https://github.com/user-attachments/assets/7187179b-ec3a-4543-9260-d3996cb40065)
 
+## Run on Localhost
+Clone the project 
+```bash
+    git clone [https://github.com/realtynh/fast_food_delivery_Ecommerce_CI_CD_Three_Tier_System.git](https://github.com/realtynh/fast_food_delivery_Ecommerce_CI_CD_Three_Tier_System.git)
+    ```
+
+
