@@ -11,7 +11,7 @@ import * as Sentry from "@sentry/react";
 
 Sentry.init({
 
-  dsn: "https://e8dfa5bb37fe666be4eee85011a7cb15@o4510194556796928.ingest.us.sentry.io/4510194577637376",
+  dsn: process.env.REACT_APP_SENTRY_DSN,
 
   // Setting this option to true will send default PII data to Sentry.
 
