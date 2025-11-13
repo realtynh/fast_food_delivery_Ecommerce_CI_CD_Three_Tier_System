@@ -8,33 +8,11 @@ import userRouter from "./routes/userRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import healthRoute from "./routes/healthRoute.js";
-import * as Sentry from '@sentry/node'
-import {
-  httpIntegration,
-  expressIntegration,
-  requestHandler, // <-- Thêm dòng này
-  tracingHandler, // <-- Thêm dòng này
-  errorHandler    // <-- Thêm dòng này
-} from '@sentry/node';
 
 // --- App config ---
 const app = express();
 const port = process.env.PORT || 4000;
 
-
-Sentry.init({
-  dsn: process.env.SENTRY_BACKEND_DSN,
-  integrations: [
-    httpIntegration({ tracing: true }), 
-    expressIntegration({ app }),       
-  ],
-  tracesSampleRate: 1.0,
-});
-
-// 2. Thêm Sentry Request Handler
-// Phải đặt TRƯỚC tất cả các router
-app.use(requestHandler()); 
-app.use(tracingHandler()); 
 // --- Middleware ---
 app.use(express.json());
 app.use(cors());
@@ -71,35 +49,11 @@ app.use("/health", healthRoute);
 app.use('/images', express.static('uploads'));
 
 
-// --- Debug Sentry route --- <--- đặt ở đây
-app.get("/debug-sentry", function mainHandler(req, res) {
-  throw new Error("My first Sentry error!");
-});
-
-
-// 3. Thêm Sentry Error Handler
-// Phải đặt SAU TẤT CẢ router, nhưng TRƯỚC bất kỳ error handler tùy chỉnh nào
-app.use(Sentry.Handlers.errorHandler());
 // --- Root API ---
 app.get("/", (req, res) => {
   res.send("API Working with Observability");
 });
 
-
-// --- Custom Error Handler (Optional) ---
-app.use((err, req, res, next) => {
-  console.error(err); // Log lỗi ra console
-  const statusCode = err.statusCode || 500;
-  const message = err.message || "Internal Server Error";
-
-  res.status(statusCode).json({
-    success: false,
-    status: statusCode,
-    message,
-
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
-  });
-});
 // --- Khởi động server ---
 if (process.env.NODE_ENV !== "test") {
   app.listen(port, () => {
