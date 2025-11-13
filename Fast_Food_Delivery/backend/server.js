@@ -8,21 +8,24 @@ import userRouter from "./routes/userRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import healthRoute from "./routes/healthRoute.js";
-const express = require('express');
-const Sentry = require('@sentry/node');
-const Tracing = require('@sentry/tracing');
-Sentry.init({
-  dsn: process.env.SENTRY_BACKEND_DSN, // Lấy từ biến môi trường
-  integrations: [
-    new Sentry.Integrations.Http({ tracing: true }), // Bật tracing cho HTTP
-    new Tracing.Integrations.Express({ app }), // Tích hợp với Express
-  ],
-  tracesSampleRate: 1.0,
-});
+import * as Sentry from '@sentry/node'
+import { httpIntegration } from '@sentry/node';
+import { expressIntegration } from '@sentry/node';
+
 
 // --- App config ---
 const app = express();
 const port = process.env.PORT || 4000;
+
+
+Sentry.init({
+  dsn: process.env.SENTRY_BACKEND_DSN,
+  integrations: [
+    httpIntegration({ tracing: true }), 
+    expressIntegration({ app }),       
+  ],
+  tracesSampleRate: 1.0,
+});
 
 // 2. Thêm Sentry Request Handler
 // Phải đặt TRƯỚC tất cả các router
