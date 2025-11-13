@@ -8,6 +8,8 @@ import Footer from './components/Footer/Footer'
 import LoginPopup from './components/LoginPopup/LoginPopup'
 import Verify from './pages/Verify/Verify'
 import MyOrders from './pages/MyOrders/MyOrders'
+
+
 const App = () => {
   const [showLogin,setShowLogin] = React.useState(false);
   return (
@@ -22,8 +24,16 @@ const App = () => {
         <Route path='/verify' element={<Verify/>}/>
         <Route path='/myorders' element={<MyOrders/>}/>
       </Routes>
+      <ErrorButton/>
     </div>
       <Footer/>
+      <button
+      onClick={() => {
+        throw new Error('This is your first error!');
+      }}
+    >
+      Break the world
+    </button>
     </>
   )
 }
