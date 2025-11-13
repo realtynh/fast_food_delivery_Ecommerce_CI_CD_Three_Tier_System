@@ -8,7 +8,7 @@ import Footer from './components/Footer/Footer'
 import LoginPopup from './components/LoginPopup/LoginPopup'
 import Verify from './pages/Verify/Verify'
 import MyOrders from './pages/MyOrders/MyOrders'
-import ErrorButton from './pages/ButtonErrorCheck/ButtonErrorCheck'
+import ErrorButton from './pages/ErrorButton/ErrorButton'
 const App = () => {
   const [showLogin,setShowLogin] = React.useState(false);
   return (
