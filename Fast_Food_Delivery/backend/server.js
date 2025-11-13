@@ -9,9 +9,13 @@ import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import healthRoute from "./routes/healthRoute.js";
 import * as Sentry from '@sentry/node'
-import { httpIntegration } from '@sentry/node';
-import { expressIntegration } from '@sentry/node';
-
+import {
+  httpIntegration,
+  expressIntegration,
+  requestHandler, // <-- Thêm dòng này
+  tracingHandler, // <-- Thêm dòng này
+  errorHandler    // <-- Thêm dòng này
+} from '@sentry/node';
 
 // --- App config ---
 const app = express();
@@ -29,8 +33,8 @@ Sentry.init({
 
 // 2. Thêm Sentry Request Handler
 // Phải đặt TRƯỚC tất cả các router
-app.use(Sentry.Handlers.requestHandler());
-app.use(Sentry.Handlers.tracingHandler());
+app.use(requestHandler()); 
+app.use(tracingHandler()); 
 // --- Middleware ---
 app.use(express.json());
 app.use(cors());
