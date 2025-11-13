@@ -8,16 +8,26 @@ import userRouter from "./routes/userRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import healthRoute from "./routes/healthRoute.js";
-
-// --- Thêm các phần Observability ---
-import client, { httpRequestDuration } from "./prometheus.js";
-import logger from "./logger.js";
-import "./tracing.js"; // bật OpenTelemetry
+const express = require('express');
+const Sentry = require('@sentry/node');
+const Tracing = require('@sentry/tracing');
+Sentry.init({
+  dsn: process.env.SENTRY_BACKEND_DSN, // Lấy từ biến môi trường
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }), // Bật tracing cho HTTP
+    new Tracing.Integrations.Express({ app }), // Tích hợp với Express
+  ],
+  tracesSampleRate: 1.0,
+});
 
 // --- App config ---
 const app = express();
 const port = process.env.PORT || 4000;
 
+// 2. Thêm Sentry Request Handler
+// Phải đặt TRƯỚC tất cả các router
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
 // --- Middleware ---
 app.use(express.json());
 app.use(cors());
@@ -53,21 +63,40 @@ app.use("/api/order", orderRouter);
 app.use("/health", healthRoute);
 app.use('/images', express.static('uploads'));
 
+
+// --- Debug Sentry route --- <--- đặt ở đây
+app.get("/debug-sentry", function mainHandler(req, res) {
+  throw new Error("My first Sentry error!");
+});
+
+
+// 3. Thêm Sentry Error Handler
+// Phải đặt SAU TẤT CẢ router, nhưng TRƯỚC bất kỳ error handler tùy chỉnh nào
+app.use(Sentry.Handlers.errorHandler());
 // --- Root API ---
 app.get("/", (req, res) => {
   res.send("API Working with Observability");
 });
 
-// --- Route cho Prometheus ---
-app.get("/metrics", async (req, res) => {
-  res.set("Content-Type", client.register.contentType);
-  res.end(await client.register.metrics());
-});
 
+// --- Custom Error Handler (Optional) ---
+app.use((err, req, res, next) => {
+  console.error(err); // Log lỗi ra console
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+
+  res.status(statusCode).json({
+    success: false,
+    status: statusCode,
+    message,
+
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+  });
+});
 // --- Khởi động server ---
 if (process.env.NODE_ENV !== "test") {
   app.listen(port, () => {
-    console.log(`🚀 Server started on http://localhost:${port}`);
+    console.log(` Server started on http://localhost:${port}`);
   });
 }
 
