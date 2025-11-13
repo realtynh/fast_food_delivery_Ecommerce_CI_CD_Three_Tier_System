@@ -9,6 +9,11 @@ import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import healthRoute from "./routes/healthRoute.js";
 
+// --- Thêm các phần Observability ---
+import client, { httpRequestDuration } from "./prometheus.js";
+import logger from "./logger.js";
+import "./tracing.js"; // bật OpenTelemetry
+
 // --- App config ---
 const app = express();
 const port = process.env.PORT || 4000;
@@ -48,10 +53,15 @@ app.use("/api/order", orderRouter);
 app.use("/health", healthRoute);
 app.use('/images', express.static('uploads'));
 
-
 // --- Root API ---
 app.get("/", (req, res) => {
   res.send("API Working with Observability");
+});
+
+// --- Route cho Prometheus ---
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", client.register.contentType);
+  res.end(await client.register.metrics());
 });
 
 // --- Khởi động server ---
