@@ -2,6 +2,7 @@ import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import validator from "validator"
+import * as Sentry from "@sentry/node"; 
 
 
 
@@ -39,6 +40,11 @@ const createToken = (id) =>{
 const registerUser = async (req,res) => {
     const {name,password,email} = req.body;
     try {
+
+// CỐ tạo test lỗi 
+        // checkError = undefined;
+        // checkError.forceError = 1
+
         // checking is user already exists     
         const exists = await userModel.findOne({email})
         if (exists) {
@@ -69,6 +75,7 @@ const registerUser = async (req,res) => {
         res.json({success:true,token});
     } catch (error) {
         console.log(error);
+        Sentry.captureException(error);
         res.json({success:false,message:"Error"})
         
     }

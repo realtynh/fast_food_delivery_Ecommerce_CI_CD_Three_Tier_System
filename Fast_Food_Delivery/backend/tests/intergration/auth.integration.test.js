@@ -15,7 +15,7 @@ describe('User API Integration', () => {
 
     //  Chờ Sentry gửi dữ liệu trước khi tắt Jest
       afterAll(async () => {
-        await Sentry.close(2000); // Chờ tối đa 2 giây
+        await Sentry.close(20000); // Chờ tối đa 2 giây
       });
     // --------------------------------------------------------
 
@@ -58,4 +58,30 @@ describe('User API Integration', () => {
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({ success: false, message: 'Invalid credentials' });
     });
+
+it('CI/CD Sentry Check: Should fail intentionally and report to Dashboard', async () => {
+        // Giả lập: API trả về 200 OK
+        userModel.findOne.mockResolvedValue({ _id: 'userId', password: 'hashedPassword' });
+        bcrypt.compare.mockResolvedValue(true);
+        jwt.sign.mockReturnValue('fakeToken');
+
+        const res = await request(app)
+            .post('/api/user/login')
+            .send({ email: 'test@example.com', password: '12345678' });
+
+        try {
+            // --- ĐIỀU KIỆN GÂY FAIL ---
+            // API trả về 200, nhưng ta expect 500 -> Chắc chắn Fail
+            expect(res.statusCode).toBe(500); 
+        } catch (error) {
+            console.error("Test Failed (Expectedly). Sending to Sentry...");
+            
+            // Gửi lỗi Assertion của Jest lên Sentry
+            Sentry.captureException(new Error(`CI/CD Test Failed Assertion: ${error.message}`));
+            
+            // Ném lại lỗi để Jest biết test này failed (và làm đỏ CI/CD)
+            throw error;
+        }
+    });
+
 });
