@@ -11,6 +11,6 @@ Sentry.init({
     nodeProfilingIntegration(),
   ],
   // Tắt Sentry khi chạy test để tránh spam, trừ khi muốn debug test
-  enabled: TRUE, 
+  enabled: true, 
   tracesSampleRate: 1.0, 
 });
