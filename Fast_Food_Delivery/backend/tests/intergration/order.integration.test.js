@@ -1,3 +1,4 @@
+import "../../instrument.js";
 import orderModel from "../../models/orderModel.js";
 import userModel from "../../models/userModel.js";
 import { placeOrder, verifyOrder, userOrders, listOrders, updateStatus } from "../../controllers/orderController.js";

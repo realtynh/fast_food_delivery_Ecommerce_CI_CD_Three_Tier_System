@@ -1,3 +1,4 @@
+import "../../instrument.js";
 import request from 'supertest';
 import app from '../../server.js';
 import userModel from '../../models/userModel.js';
