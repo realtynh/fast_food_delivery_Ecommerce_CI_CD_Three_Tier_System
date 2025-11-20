@@ -1,6 +1,8 @@
+import "../../instrument.js";
 import { addFood, listFood, removeFood } from '../../controllers/foodController.js';
 import foodModel from '../../models/foodModel.js';
 import fs from 'fs';
+import * as Sentry from "@sentry/node";
 
 jest.mock('../../models/foodModel.js');
 jest.mock('fs');

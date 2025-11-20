@@ -2,6 +2,7 @@ import "../../instrument.js";
 import request from 'supertest';
 import app from '../../server.js';
 import userModel from '../../models/userModel.js';
+import * as Sentry from "@sentry/node";
 
 jest.mock('../../models/userModel.js');
 
@@ -11,6 +12,11 @@ jest.mock('../../middleware/auth.js', () => (req, res, next) => next());
 describe('Cart API Integration', () => {
   afterEach(() => jest.clearAllMocks());
 
+//  Chờ Sentry gửi dữ liệu trước khi tắt Jest
+  afterAll(async () => {
+    await Sentry.close(2000); // Chờ tối đa 2 giây
+  });
+// --------------------------------------------------------
   it('POST /api/cart/add should add item to cart', async () => {
     const cartData = {};
     userModel.findById.mockResolvedValue({ cartData });

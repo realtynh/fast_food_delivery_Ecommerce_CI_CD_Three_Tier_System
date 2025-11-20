@@ -2,7 +2,7 @@ import "../../instrument.js";
 import orderModel from "../../models/orderModel.js";
 import userModel from "../../models/userModel.js";
 import { placeOrder, verifyOrder, userOrders, listOrders, updateStatus } from "../../controllers/orderController.js";
-
+import * as Sentry from "@sentry/node";
 // Mock response object
 const mockRes = () => {
   const res = {};
@@ -43,6 +43,12 @@ describe("Order Controller - Unit Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
+  //  Chờ Sentry gửi dữ liệu trước khi tắt Jest
+    afterAll(async () => {
+      await Sentry.close(2000); // Chờ tối đa 2 giây
+    });
+  // --------------------------------------------------------
 
   // placeOrder
   it("placeOrder should place order and return session url", async () => {

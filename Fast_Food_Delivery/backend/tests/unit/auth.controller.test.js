@@ -1,9 +1,11 @@
+import "../../instrument.js";
 import { loginUser, registerUser } from '../../controllers/userController.js';
 import userModel from '../../models/userModel.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import httpMocks from 'node-mocks-http';
+import * as Sentry from "@sentry/node";
 
 jest.mock('../../models/userModel.js');
 jest.mock('bcrypt');
@@ -14,6 +16,8 @@ describe('User Controller', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
+
+    
 
     describe('registerUser', () => {
         it('should register a new user and return token', async () => {

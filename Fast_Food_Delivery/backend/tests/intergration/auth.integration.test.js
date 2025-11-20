@@ -4,6 +4,7 @@ import app from '../../server.js';
 import userModel from '../../models/userModel.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import * as Sentry from "@sentry/node";
 
 jest.mock('../../models/userModel.js');
 jest.mock('bcrypt');
@@ -11,6 +12,12 @@ jest.mock('jsonwebtoken');
 
 describe('User API Integration', () => {
     afterEach(() => jest.clearAllMocks());
+
+    //  Chờ Sentry gửi dữ liệu trước khi tắt Jest
+      afterAll(async () => {
+        await Sentry.close(2000); // Chờ tối đa 2 giây
+      });
+    // --------------------------------------------------------
 
     it('POST /api/user/register should return success and token', async () => {
         userModel.findOne.mockResolvedValue(null);

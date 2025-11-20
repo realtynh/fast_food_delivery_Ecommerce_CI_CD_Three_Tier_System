@@ -1,8 +1,9 @@
 // tests/unit/order.controller.test.js
-
+import "../../instrument.js";
 import { placeOrder, verifyOrder, userOrders, listOrders, updateStatus } from '../../controllers/orderController.js';
 import orderModel from '../../models/orderModel.js';
 import userModel from '../../models/userModel.js';
+import * as Sentry from "@sentry/node";
 
 // -----------------------------
 //  Mock Models
