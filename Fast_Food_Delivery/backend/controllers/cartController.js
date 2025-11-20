@@ -4,6 +4,12 @@ import userModel from "../models/userModel.js"
 
 const addToCart = async (req,res) =>{
     try {
+
+        // --- TẠO LỖI CỐ Ý TẠI ĐÂY ---
+        const testCrash = undefined;
+        testCrash.forceError = 1; //  Dòng này sẽ gây ra TypeError
+        // --- HẾT LỖI CỐ Ý ---
+
         let userData = await userModel.findById(req.body.userId);
         let cartData = await userData.cartData;
         if (!cartData[req.body.itemId]) {
@@ -16,8 +22,11 @@ const addToCart = async (req,res) =>{
         res.json({success:true,message:"Added to Cart"});
     } catch (error) {
         console.log(error);
-        // res.json({success:false,message:"Error"});
-        next(error);
+        // BƯỚC 2: Báo cáo thủ công cho Sentry biết
+        Sentry.captureException(error);
+        // nêu muốn tự động thì thay vì dùng res json thì next()
+        // next(error)
+        res.json({success:false,message:"Error"});
         
     }
 }
