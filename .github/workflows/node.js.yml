@@ -29,6 +29,13 @@ jobs:
 
       - name: Run backend tests
         run: npm test --if-present
+        env:
+
+          SENTRY_BACKEND_DSN: ${{ secrets.SENTRY_BACKEND_DSN }}
+          
+          CI: true 
+             
+          JWT_SECRET: "dummy_secret_for_test"
 
       - name: Deploy backend to Render
         run: |
