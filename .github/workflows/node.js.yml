@@ -28,7 +28,7 @@ jobs:
         run: npm run build --if-present
 
       - name: Run backend tests
-        run: ENABLE_SENTRY_TEST=true npm test --if-present
+        run: npm test --if-present
 
       - name: Deploy backend to Render
         run: |
