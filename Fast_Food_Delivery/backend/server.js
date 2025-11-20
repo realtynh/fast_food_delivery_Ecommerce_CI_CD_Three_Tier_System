@@ -1,5 +1,4 @@
 // server.js
-import "./instrument.js";
 import 'dotenv/config';
 import express from "express";
 import cors from "cors";
@@ -16,6 +15,7 @@ import logger from "./logger.js";
 import "./tracing.js"; 
 
 // --- SENTRY IMPORT ---
+import "./instrument.js";
 import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
 

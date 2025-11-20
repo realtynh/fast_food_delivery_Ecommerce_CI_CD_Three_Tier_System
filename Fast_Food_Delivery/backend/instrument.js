@@ -4,14 +4,13 @@ import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
 
 const isTest = process.env.NODE_ENV === 'test';
-const isCI = process.env.CI === 'true';
+
 Sentry.init({
   dsn: process.env.SENTRY_BACKEND_DSN,
   integrations: [
     nodeProfilingIntegration(),
   ],
   // Tắt Sentry khi chạy test để tránh spam, trừ khi muốn debug test
-  // enabled: true, 
-  enabled: !isTest || isCI,
+  enabled: !isTest, 
   tracesSampleRate: 1.0, 
 });
