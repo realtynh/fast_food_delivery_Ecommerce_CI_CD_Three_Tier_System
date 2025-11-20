@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../../server.js';
 import userModel from '../../models/userModel.js';
-
+import * as Sentry from "@sentry/node";
 // Mock userModel để không chạm vào Database thật
 jest.mock('../../models/userModel.js');
 
@@ -12,6 +12,10 @@ describe('Cart API Integration', () => {
   // Reset các mock sau mỗi test để không bị chồng chéo dữ liệu
   afterEach(() => jest.clearAllMocks());
 
+  afterAll(async () => {
+    // Chờ tối đa 2 giây để Sentry đẩy dữ liệu lên server trước khi Jest tắt
+    await Sentry.close(10000); 
+  });
   // --- TEST 1: Thêm vào giỏ hàng ---
   it('POST /api/cart/add should add item to cart', async () => {
     const cartData = {};

@@ -7,8 +7,8 @@ const addToCart = async (req,res) =>{
     try {
 
         // --- TẠO LỖI CỐ Ý TẠI ĐÂY ---
-        // const testCrash = undefined;
         //  Dòng này sẽ gây ra TypeError
+        // const testCrash = undefined;
         // testCrash.forceError = 1; 
         // --- HẾT LỖI CỐ Ý ---
 
@@ -25,10 +25,11 @@ const addToCart = async (req,res) =>{
     } catch (error) {
         console.log(error);
         // BƯỚC 2: Báo cáo thủ công cho Sentry biết
-        // Sentry.captureException(error);
+        Sentry.captureException(error);
         // nêu muốn tự động thì thay vì dùng res json thì next()
         // next(error)
-        res.json({success:false,message:"Error"});
+        // res.json({success:false,message:"Error"});
+        res.status(500).json({ success: false, message: error.message });
         
     }
 }
