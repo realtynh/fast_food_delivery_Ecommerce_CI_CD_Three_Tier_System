@@ -45,9 +45,9 @@ describe("Order Controller - Unit Tests", () => {
   });
 
   //  Chờ Sentry gửi dữ liệu trước khi tắt Jest
-    afterAll(async () => {
-      await Sentry.close(2000); // Chờ tối đa 2 giây
-    });
+    // afterAll(async () => {
+    //   await Sentry.close(2000); // Chờ tối đa 2 giây
+    // });
   // --------------------------------------------------------
 
   // placeOrder
