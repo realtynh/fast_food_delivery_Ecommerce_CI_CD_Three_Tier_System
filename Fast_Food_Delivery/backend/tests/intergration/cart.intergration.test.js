@@ -1,8 +1,8 @@
 import "../../instrument.js";
+import * as Sentry from "@sentry/node";
 import request from 'supertest';
 import app from '../../server.js';
 import userModel from '../../models/userModel.js';
-import * as Sentry from "@sentry/node";
 
 jest.mock('../../models/userModel.js');
 
