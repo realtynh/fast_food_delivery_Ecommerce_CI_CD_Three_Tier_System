@@ -1,4 +1,4 @@
-import "../../instrument.js";
+// import "../../instrument.js";
 import { addFood, listFood, removeFood } from '../../controllers/foodController.js';
 import foodModel from '../../models/foodModel.js';
 import fs from 'fs';

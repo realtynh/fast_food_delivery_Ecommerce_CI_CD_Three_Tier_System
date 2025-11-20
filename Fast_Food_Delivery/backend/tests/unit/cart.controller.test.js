@@ -1,4 +1,4 @@
-import "../../instrument.js";
+// import "../../instrument.js";
 import { addToCart, removeFromCart, getCart } from '../../controllers/cartController.js';
 import userModel from '../../models/userModel.js';
 import * as Sentry from "@sentry/node";

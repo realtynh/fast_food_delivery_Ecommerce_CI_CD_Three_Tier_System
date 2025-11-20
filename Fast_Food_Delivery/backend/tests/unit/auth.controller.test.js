@@ -1,4 +1,4 @@
-import "../../instrument.js";
+// import "../../instrument.js";
 import { loginUser, registerUser } from '../../controllers/userController.js';
 import userModel from '../../models/userModel.js';
 import bcrypt from 'bcrypt';

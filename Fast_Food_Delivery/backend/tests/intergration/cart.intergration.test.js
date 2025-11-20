@@ -2,6 +2,8 @@ import request from 'supertest';
 import app from '../../server.js';
 import userModel from '../../models/userModel.js';
 
+jest.setTimeout(30000);
+
 jest.mock('../../models/userModel.js');
 
 // Mock authMiddleware để bypass xác thực

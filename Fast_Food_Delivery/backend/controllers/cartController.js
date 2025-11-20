@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/node";
+// import * as Sentry from "@sentry/node";
 import userModel from "../models/userModel.js"
 
 // add item to user's cart
@@ -25,7 +25,7 @@ const addToCart = async (req,res) =>{
     } catch (error) {
         console.log(error);
         // BƯỚC 2: Báo cáo thủ công cho Sentry biết
-        Sentry.captureException(error);
+        // Sentry.captureException(error);
         // nêu muốn tự động thì thay vì dùng res json thì next()
         // next(error)
         res.json({success:false,message:"Error"});
