@@ -14,7 +14,7 @@ import client, { httpRequestDuration } from "./prometheus.js";
 import logger from "./logger.js";
 import "./tracing.js"; 
 
-// --- SENTRY IMPORT (NEW) ---
+// --- SENTRY IMPORT ---
 import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
 
@@ -22,10 +22,10 @@ import { nodeProfilingIntegration } from "@sentry/profiling-node";
 const app = express();
 const port = process.env.PORT || 4000;
 
-// --- SENTRY INIT (NEW) ---
-// Khởi tạo Sentry ngay sau khi tạo app
+// --- SENTRY INIT ---
 Sentry.init({
-  dsn: process.env.SENTRY_DSN_BACKEND, // Đảm bảo bạn đã thêm biến này trong .env hoặc Render
+  dsn: process.env.SENTRY_BACKEND_DSN,
+  enabled: process.env.NODE_ENV !== 'test', // Tắt khi chạy test
   integrations: [
     nodeProfilingIntegration(),
   ],
@@ -33,16 +33,18 @@ Sentry.init({
   profilesSampleRate: 1.0,
 });
 
-// --- SENTRY MIDDLEWARE (Request & Tracing) (NEW) ---
-// Phải đặt ĐẦU TIÊN, trước tất cả middleware khác
-app.use(Sentry.Handlers.requestHandler());
-app.use(Sentry.Handlers.tracingHandler());
+// ---------------------------------------------------------
+// BỎ QUA HAI DÒNG NÀY (ĐÃ XÓA ĐỂ SỬA LỖI v8)
+// app.use(Sentry.Handlers.requestHandler()); <-- XÓA
+// app.use(Sentry.Handlers.tracingHandler()); <-- XÓA
+// Trong Sentry v8, việc theo dõi request được tự động hóa
+// ---------------------------------------------------------
 
 // --- Middleware cũ ---
 app.use(express.json());
 app.use(cors());
 
-// --- Đo độ trễ request ---
+// --- Đo độ trễ request (Prometheus) ---
 app.use((req, res, next) => {
   const end = httpRequestDuration.startTimer();
   res.on("finish", () => {
@@ -78,9 +80,9 @@ app.get("/", (req, res) => {
   res.send("API Working with Observability");
 });
 
-// --- Test Sentry Route (Optional - để test lỗi) ---
+// --- Test Sentry Route ---
 app.get("/debug-sentry", function mainHandler(req, res) {
-  throw new Error("My first Sentry error!");
+  throw new Error("Sentry V8 Test Error!");
 });
 
 // --- Route cho Prometheus ---
@@ -89,14 +91,19 @@ app.get("/metrics", async (req, res) => {
   res.end(await client.register.metrics());
 });
 
-// --- SENTRY ERROR HANDLER (NEW) ---
-// Phải đặt SAU tất cả các routes/controllers nhưng TRƯỚC custom error handler (nếu có) và app.listen
-app.use(Sentry.Handlers.errorHandler());
+// --- SENTRY ERROR HANDLER (MỚI CHO v8) ---
+// Thay vì dùng app.use(Sentry.Handlers.errorHandler()), ta dùng lệnh này:
+Sentry.setupExpressErrorHandler(app);
 
-// (Optional) Custom Error Handler của bạn nếu muốn format lại lỗi trả về cho Client
+// (Optional) Custom Error Handler của bạn
+// Lưu ý: setupExpressErrorHandler sẽ tự động bắt lỗi trước,
+// sau đó mới chuyền xuống đây nếu bạn muốn format lại JSON.
 app.use(function onError(err, req, res, next) {
   res.statusCode = 500;
-  res.json({ error: err.message, sentryId: res.sentry });
+  res.json({ 
+      error: err.message, 
+      sentryId: Sentry.lastEventId() // Lấy ID lỗi từ Sentry để debug
+  });
 });
 
 // --- Khởi động server ---
