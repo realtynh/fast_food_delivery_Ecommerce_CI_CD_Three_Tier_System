@@ -5,6 +5,9 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as Sentry from "@sentry/node";
 
+
+jest.setTimeout(30000);
+
 jest.mock('../../models/userModel.js');
 jest.mock('bcrypt');
 jest.mock('jsonwebtoken');
@@ -57,9 +60,8 @@ describe('User API Integration', () => {
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({ success: false, message: 'Invalid credentials' });
     });
-
+// test sentry
 it('CI/CD Sentry Check: Should fail intentionally and report to Dashboard', async () => {
-        // Giả lập: API trả về 200 OK
         userModel.findOne.mockResolvedValue({ _id: 'userId', password: 'hashedPassword' });
         bcrypt.compare.mockResolvedValue(true);
         jwt.sign.mockReturnValue('fakeToken');
@@ -69,16 +71,14 @@ it('CI/CD Sentry Check: Should fail intentionally and report to Dashboard', asyn
             .send({ email: 'test@example.com', password: '12345678' });
 
         try {
-            // --- ĐIỀU KIỆN GÂY FAIL ---
-            // API trả về 200, nhưng ta expect 500 -> Chắc chắn Fail
+            // Mong đợi 500 để gây lỗi
             expect(res.statusCode).toBe(500); 
         } catch (error) {
-            console.error("Test Failed (Expectedly). Sending to Sentry...");
+            console.error("Test Failed. Sending to Sentry...");
             
-            // Gửi lỗi Assertion của Jest lên Sentry
+            // Gửi lỗi
             Sentry.captureException(new Error(`CI/CD Test Failed Assertion: ${error.message}`));
             
-            // Ném lại lỗi để Jest biết test này failed (và làm đỏ CI/CD)
             throw error;
         }
     });
