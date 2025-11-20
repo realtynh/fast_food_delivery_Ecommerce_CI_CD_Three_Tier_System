@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import userModel from "../models/userModel.js"
 
 // add item to user's cart
