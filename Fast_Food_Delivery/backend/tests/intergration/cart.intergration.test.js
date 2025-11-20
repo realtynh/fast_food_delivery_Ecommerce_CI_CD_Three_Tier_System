@@ -1,22 +1,18 @@
-// import "../../instrument.js";
-// import * as Sentry from "@sentry/node";
 import request from 'supertest';
 import app from '../../server.js';
 import userModel from '../../models/userModel.js';
 
+// Mock userModel để không chạm vào Database thật
 jest.mock('../../models/userModel.js');
 
-// Mock authMiddleware để bypass xác thực
+// Mock authMiddleware để bypass xác thực (luôn cho qua)
 jest.mock('../../middleware/auth.js', () => (req, res, next) => next());
 
 describe('Cart API Integration', () => {
+  // Reset các mock sau mỗi test để không bị chồng chéo dữ liệu
   afterEach(() => jest.clearAllMocks());
 
-//  Chờ Sentry gửi dữ liệu trước khi tắt Jest
-  // afterAll(async () => {
-  //   await Sentry.close(2000); // Chờ tối đa 2 giây
-  // });
-// --------------------------------------------------------
+  // --- TEST 1: Thêm vào giỏ hàng ---
   it('POST /api/cart/add should add item to cart', async () => {
     const cartData = {};
     userModel.findById.mockResolvedValue({ cartData });
@@ -30,6 +26,7 @@ describe('Cart API Integration', () => {
     expect(res.body).toEqual({ success: true, message: 'Added to Cart' });
   });
 
+  // --- TEST 2: Xóa khỏi giỏ hàng ---
   it('POST /api/cart/remove should remove item from cart', async () => {
     const cartData = { item1: 2 };
     userModel.findById.mockResolvedValue({ cartData });
@@ -43,6 +40,7 @@ describe('Cart API Integration', () => {
     expect(res.body).toEqual({ success: true, message: 'Removed from Cart' });
   });
 
+  // --- TEST 3: Lấy dữ liệu giỏ hàng ---
   it('POST /api/cart/get should return cart data', async () => {
     const cartData = { item1: 1 };
     userModel.findById.mockResolvedValue({ cartData });
@@ -55,9 +53,9 @@ describe('Cart API Integration', () => {
     expect(res.body).toEqual({ success: true, cartData });
   });
 
-  // --- TEST CASE GÂY LỖI CHO SENTRY ---
-  it('POST /api/cart/add should trigger Sentry when Database fails', async () => {
-    // 1. Giả lập lỗi: Khi gọi findById thì ném lỗi Database ra
+  // --- TEST 4: KIỂM TRA XỬ LÝ LỖI (VÀ KÍCH HOẠT SENTRY) ---
+  it('POST /api/cart/add should return 500 when database fails', async () => {
+    // 1. Giả lập lỗi Database
     const fakeError = new Error("Sentry Test: Database Connection Failed!");
     userModel.findById.mockRejectedValue(fakeError);
 
@@ -66,12 +64,13 @@ describe('Cart API Integration', () => {
       .post('/api/cart/add')
       .send({ userId: 'user123', itemId: 'item1' });
 
-    // 3. Log ra để xem Controller của bạn xử lý lỗi thế nào
-    console.log("Response status:", res.statusCode);
+    // 3. Khẳng định (Assert)
+    // Test này sẽ PASS (Màu xanh) nếu server trả về lỗi 500 đúng như mong đợi
+    expect(res.statusCode).toBe(500); 
+    expect(res.body.success).toBe(false);
     
-    // Lưu ý: 
-    // - Nếu Controller bạn dùng try/catch và res.json({success: false}) -> Test này vẫn Pass nhưng Sentry CÓ THỂ KHÔNG BẮT (nếu bạn không Sentry.captureException).
-    // - Nếu Controller bạn dùng next(error) -> Test này sẽ trả về 500 -> Sentry BẮT NGAY.
+    // (Tùy chọn) Kiểm tra xem message lỗi có được trả về không
+    // expect(res.body.message).toBeDefined(); 
   });
 
 });
