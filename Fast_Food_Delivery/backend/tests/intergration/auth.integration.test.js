@@ -3,7 +3,7 @@ import app from '../../server.js';
 import userModel from '../../models/userModel.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import * as Sentry from "@sentry/node";
+// import * as Sentry from "@sentry/node";
 
 
 jest.setTimeout(30000);

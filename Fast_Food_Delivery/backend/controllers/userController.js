@@ -2,7 +2,7 @@ import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import validator from "validator"
-import * as Sentry from "@sentry/node"; 
+// import * as Sentry from "@sentry/node"; 
 
 
 
@@ -75,7 +75,7 @@ const registerUser = async (req,res) => {
         res.json({success:true,token});
     } catch (error) {
         console.log(error);
-        Sentry.captureException(error);
+        // Sentry.captureException(error);
         res.json({success:false,message:"Error"})
         
     }
