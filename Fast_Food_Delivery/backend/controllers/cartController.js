@@ -28,8 +28,8 @@ const addToCart = async (req,res) =>{
         Sentry.captureException(error);
         // nêu muốn tự động thì thay vì dùng res json thì next()
         // next(error)
-        // res.json({success:false,message:"Error"});
-        res.status(500).json({ success: false, message: error.message });
+        res.json({success:false,message:"Error"});
+        // res.status(500).json({ success: false, message: error.message });
         
     }
 }
