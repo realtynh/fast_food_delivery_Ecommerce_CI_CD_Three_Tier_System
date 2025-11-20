@@ -15,19 +15,23 @@
 // });
 
 // instrument.js
+
+// --- QUAN TRỌNG: DÒNG NÀY PHẢI Ở ĐẦU VÀ KHÔNG ĐƯỢC COMMENT ---
+import 'dotenv/config'; 
+// -------------------------------------------------------------
+
 import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
 
-// Logic: Tắt ở test, TRỪ KHI có biến ENABLE_SENTRY_TEST=true
 const isTestEnv = process.env.NODE_ENV === 'test';
 const forceEnable = process.env.ENABLE_SENTRY_TEST === 'true';
 
+// Debug để chắc chắn DSN đã nhận
+console.log("Sentry DSN Status:", process.env.SENTRY_BACKEND_DSN ? "Loaded ✅" : "Missing ❌");
+
 Sentry.init({
   dsn: process.env.SENTRY_BACKEND_DSN,
-  
-  // SỬA DÒNG NÀY:
   enabled: !isTestEnv || forceEnable, 
-
   integrations: [
     nodeProfilingIntegration(),
   ],
