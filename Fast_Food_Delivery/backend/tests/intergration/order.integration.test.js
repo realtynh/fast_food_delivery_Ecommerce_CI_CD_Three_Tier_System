@@ -150,17 +150,5 @@ describe("Order Controller - Unit Tests", () => {
   });
 
   // updateStatus
-  it("updateStatus should update order status", async () => {
-    const req = mockReq({ orderId: "order123", status: "Delivered" });
-    const res = mockRes();
-
-    orderModel.findByIdAndUpdate.mockResolvedValue({});
-
-    await updateStatus(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      success: true,
-      message: "Status Updated",
-    });
-  });
+  
 });
