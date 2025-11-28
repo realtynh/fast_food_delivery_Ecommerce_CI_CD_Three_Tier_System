@@ -7,9 +7,9 @@ const addToCart = async (req,res) =>{
     try {
 
         // --- TẠO LỖI CỐ Ý TẠI ĐÂY ---
-        //  Dòng này sẽ gây ra TypeError
-        // const testCrash = undefined;
-        // testCrash.forceError = 1; 
+        // Dòng này sẽ gây ra TypeError
+         const testCrash = undefined;
+         testCrash.forceError = 1; 
         // --- HẾT LỖI CỐ Ý ---
 
         let userData = await userModel.findById(req.body.userId);
