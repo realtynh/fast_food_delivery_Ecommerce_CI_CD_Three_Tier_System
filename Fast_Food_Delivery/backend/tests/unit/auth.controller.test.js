@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import httpMocks from 'node-mocks-http';
-import * as Sentry from "@sentry/node";
+// import * as Sentry from "@sentry/node";
 
 jest.mock('../../models/userModel.js');
 jest.mock('bcrypt');
