@@ -16,9 +16,9 @@ describe('User API Integration', () => {
     afterEach(() => jest.clearAllMocks());
 
     //  Chờ Sentry gửi dữ liệu trước khi tắt Jest
-    //   afterAll(async () => {
-    //     await Sentry.close(20000); // Chờ tối đa 2 giây
-    //   });
+      afterAll(async () => {
+        await Sentry.close(20000); // Chờ tối đa 2 giây
+      });
     // --------------------------------------------------------
 
     it('POST /api/user/register should return success and token', async () => {
