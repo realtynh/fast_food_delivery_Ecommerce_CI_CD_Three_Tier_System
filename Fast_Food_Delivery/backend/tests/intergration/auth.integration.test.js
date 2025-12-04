@@ -61,26 +61,26 @@ describe('User API Integration', () => {
         expect(res.body).toEqual({ success: false, message: 'Invalid credentials' });
     });
 // test sentry
-// it('CI/CD Sentry Check: Should fail intentionally and report to Dashboard', async () => {
-//         userModel.findOne.mockResolvedValue({ _id: 'userId', password: 'hashedPassword' });
-//         bcrypt.compare.mockResolvedValue(true);
-//         jwt.sign.mockReturnValue('fakeToken');
+it('CI/CD Sentry Check: Should fail intentionally and report to Dashboard', async () => {
+        userModel.findOne.mockResolvedValue({ _id: 'userId', password: 'hashedPassword' });
+        bcrypt.compare.mockResolvedValue(true);
+        jwt.sign.mockReturnValue('fakeToken');
 
-//         const res = await request(app)
-//             .post('/api/user/login')
-//             .send({ email: 'test@example.com', password: '12345678' });
+        const res = await request(app)
+            .post('/api/user/login')
+            .send({ email: 'test@example.com', password: '12345678' });
 
-//         try {
-//             // Mong đợi 500 để gây lỗi
-//             expect(res.statusCode).toBe(500); 
-//         } catch (error) {
-//             console.error("Test Failed...");
+        try {
+            // Mong đợi 500 để gây lỗi
+            expect(res.statusCode).toBe(500); 
+        } catch (error) {
+            console.error("Test Failed...");
             
-//             // Gửi lỗi
-//             Sentry.captureException(new Error(`CI/CD Test Failed Assertion: ${error.message}`));
+            // Gửi lỗi
+            Sentry.captureException(new Error(`CI/CD Test Failed Assertion: ${error.message}`));
             
-//             throw error;
-//         }
-//     });
+            throw error;
+        }
+    });
 
 });
