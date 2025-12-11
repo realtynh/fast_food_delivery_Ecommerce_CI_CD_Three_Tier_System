@@ -13,14 +13,7 @@ jobs:
     defaults:
       run:
         working-directory: ./Fast_Food_Delivery/backend
-    steps:
-      # [THÊM MỚI] 1. Cài đặt Grafana Agent để giám sát job này
-      - name: Setup Grafana Observability
-        uses: grafana/setup-grafana-agent-action@v0.1.0
-        with:
-          grafana_cloud_api_key: ${{ secrets.GRAFANA_CLOUD_API_KEY }}
-          grafana_cloud_instance_id: ${{ secrets.GRAFANA_CLOUD_INSTANCE_ID }}
-          
+    steps:    
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -56,13 +49,6 @@ jobs:
       run:
         working-directory: ./Fast_Food_Delivery/admin
     steps:
-      # [THÊM MỚI] 1. Cài đặt Grafana Agent để giám sát job này
-      - name: Setup Grafana Observability
-        uses: grafana/setup-grafana-agent-action@v0.1.0
-        with:
-          grafana_cloud_api_key: ${{ secrets.GRAFANA_CLOUD_API_KEY }}
-          grafana_cloud_instance_id: ${{ secrets.GRAFANA_CLOUD_INSTANCE_ID }}
-          
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -91,13 +77,6 @@ jobs:
       run:
         working-directory: ./Fast_Food_Delivery/frontend
     steps:
-      # [THÊM MỚI] 1. Cài đặt Grafana Agent để giám sát job này
-      - name: Setup Grafana Observability
-        uses: grafana/setup-grafana-agent-action@v0.1.0
-        with:
-          grafana_cloud_api_key: ${{ secrets.GRAFANA_CLOUD_API_KEY }}
-          grafana_cloud_instance_id: ${{ secrets.GRAFANA_CLOUD_INSTANCE_ID }}
-          
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
