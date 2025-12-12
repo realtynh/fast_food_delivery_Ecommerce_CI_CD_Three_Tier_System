@@ -1,5 +1,5 @@
 // import "../../instrument.js";
-import { addFood, listFood, removeFood } from '../../controllers/foodController.js';
+import { addFood, listFood, removeFood, updateFoodName } from '../../controllers/foodController.js';
 import foodModel from '../../models/foodModel.js';
 import fs from 'fs';
 import * as Sentry from "@sentry/node";
@@ -97,6 +97,40 @@ describe('Food Controller - Unit Tests', () => {
 
       await removeFood(req, res);
       expect(res.json).toHaveBeenCalledWith({ success: false, message: 'error' });
+    });
+
+    it('should return error if food not found', async () => {
+      const req = mockReq({ id: 'nonexistent' });
+      const res = mockRes();
+
+      foodModel.findById.mockResolvedValue(null);
+
+      await removeFood(req, res);
+      // When food is null, accessing food.image throws TypeError
+      // The controller catches this and returns success: false
+      expect(res.json).toHaveBeenCalledWith({ success: false, message: 'error' });
+    });
+  });
+
+  describe('updateFoodName', () => {
+    it('should update food name successfully', async () => {
+      const req = mockReq({ id: 'food123', name: 'New Name' });
+      const res = mockRes();
+
+      foodModel.findByIdAndUpdate.mockResolvedValue({});
+
+      await updateFoodName(req, res);
+      expect(res.json).toHaveBeenCalledWith({ success: true, message: 'Food name updated' });
+    });
+
+    it('should return error on failure', async () => {
+      const req = mockReq({ id: 'food123', name: 'New Name' });
+      const res = mockRes();
+
+      foodModel.findByIdAndUpdate.mockRejectedValue(new Error('fail'));
+
+      await updateFoodName(req, res);
+      expect(res.json).toHaveBeenCalledWith({ success: false, message: 'Error' });
     });
   });
 });
