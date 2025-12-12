@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node --require ./instrumentation.cjs server.js",
+    "start": "node --import ./instrumentation.cjs server.js",
     "dev": "nodemon --exec node --import ./instrumentation.cjs server.js",
     "server": "nodemon --exec node --import ./instrumentation.cjs server.js",
     "test": "jest"
