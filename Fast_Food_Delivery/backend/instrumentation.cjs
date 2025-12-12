@@ -1,4 +1,4 @@
-// instrumentation.cjs - PHIÊN BẢN FULL (ĐÃ SỬA LỖI)
+/* instrumentation.cjs - FIXED & CLEAN */
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
@@ -8,70 +8,66 @@ const { PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics');
 const { SimpleLogRecordProcessor } = require('@opentelemetry/sdk-logs');
 const { Metadata } = require('@grpc/grpc-js');
 
-// 1. KHỞI TẠO MẶC ĐỊNH CHO LOCALHOST (Kết nối với Alloy)
+// 1. CẤU HÌNH MẶC ĐỊNH (Localhost -> Alloy)
 const LOCAL_URL = 'http://localhost:4317';
 
+// Khởi tạo các Exporter trỏ về Alloy trước
 let traceExporter = new OTLPTraceExporter({ url: LOCAL_URL });
 let metricExporter = new OTLPMetricExporter({ url: LOCAL_URL });
 let logExporter = new OTLPLogExporter({ url: LOCAL_URL });
 
-// 2. LOGIC XỬ LÝ KHI CHẠY TRÊN GITHUB ACTIONS (CI/CD)
-// Nếu phát hiện đang chạy trên CI, ta sẽ ghi đè cấu hình để bắn thẳng lên Cloud
+// 2. LOGIC CHO GITHUB ACTIONS (CI/CD) - Chỉ ghi đè khi cần thiết
 if (process.env.CI === 'true') {
-  console.log('🚀 Chạy trên CI: Đang cấu hình gửi trực tiếp lên Grafana Cloud...');
+  console.log('🚀 Detected CI Environment. Adjusting for Grafana Cloud...');
   
   const TEMPO_USER_ID = process.env.TEMPO_USER_ID; 
   const API_KEY = process.env.GRAFANA_CLOUD_API_KEY;
-  
-  // URL Endpoint (Lấy từ Grafana Cloud Portal - Tempo)
-  // Lưu ý: Trên CI chủ yếu cần Traces để debug lỗi test.
-  const TEMPO_URL = process.env.TEMPO_ENDPOINT || 'https://tempo-prod-10-prod-ap-southeast-1.grafana.net:443';
+  const TEMPO_ENDPOINT = process.env.TEMPO_ENDPOINT || 'https://tempo-prod-10-prod-ap-southeast-1.grafana.net:443';
 
   if (TEMPO_USER_ID && API_KEY) {
     const metadata = new Metadata();
-    // Tạo Auth Header: Basic base64(UserID:ApiKey)
     const auth = Buffer.from(`${TEMPO_USER_ID}:${API_KEY}`).toString('base64');
     metadata.set('Authorization', 'Basic ' + auth);
 
-    // Ghi đè traceExporter để dùng cấu hình Cloud
+    // Ghi đè Trace Exporter để bắn thẳng lên Cloud (Bỏ qua Alloy vì trên CI không có Alloy)
     traceExporter = new OTLPTraceExporter({ 
-      url: TEMPO_URL, 
+      url: TEMPO_ENDPOINT, 
       metadata: metadata 
     });
-    
-    // Lưu ý: Metrics và Logs trên CI thường ít quan trọng hơn Traces nên ta giữ nguyên hoặc bỏ qua để tránh phức tạp auth.
-    console.log('✅ Đã cập nhật cấu hình Traces cho CI/CD.');
+    console.log('✅ Configured Direct Cloud Tracing for CI.');
   } else {
-    console.warn('⚠️ Đang chạy trên CI nhưng thiếu TEMPO_USER_ID hoặc API_KEY. Traces sẽ không được gửi.');
+    console.warn('⚠️ Missing Secrets on CI. Tracing might fail.');
   }
 }
 
-// 3. KHỞI TẠO SDK (Sử dụng các biến exporter đã xử lý ở trên)
+// 3. KHỞI TẠO SDK (Chỉ khai báo 1 lần duy nhất cho mỗi thành phần)
 const sdk = new NodeSDK({
   serviceName: 'fast-food-backend',
   
-  // Sử dụng biến traceExporter (đã được tự động chọn Local hoặc Cloud ở trên)
+  // --- Traces ---
   traceExporter: traceExporter,
-  
-  // Metrics (Gửi mỗi 5 giây)
+
+  // --- Metrics (SỬA LỖI: Chỉ giữ lại 1 cái này thôi) ---
   metricReader: new PeriodicExportingMetricReader({
-    exporter: metricExporter,
-    exportIntervalMillis: 5000, 
+    exporter: metricExporter,     // Sử dụng biến metricExporter đã khai báo ở trên
+    exportIntervalMillis: 5000,   // Gửi dữ liệu mỗi 5 giây (Rất quan trọng để test nhanh)
   }),
 
-  // Logs
+  // --- Logs ---
   logRecordProcessor: new SimpleLogRecordProcessor(logExporter),
 
-  // Tự động đo đạc
+  // --- Auto Instrumentation ---
   instrumentations: [getNodeAutoInstrumentations()],
 });
 
+// 4. BẮT ĐẦU GIÁM SÁT
 sdk.start();
 
-console.log('✅ Hệ thống giám sát (Observability) đã khởi động.');
+console.log('✅ Full Observability Started (Traces, Metrics, Logs)');
 
+// Graceful Shutdown
 process.on('SIGTERM', () => {
   sdk.shutdown()
-    .then(() => console.log('Tracing terminated'))
+    .then(() => console.log('Observability terminated'))
     .finally(() => process.exit(0));
 });
