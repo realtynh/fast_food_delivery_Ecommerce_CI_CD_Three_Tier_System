@@ -1,4 +1,5 @@
 /* instrumentation.cjs - FIXED & CLEAN */
+const { ConsoleMetricExporter } = require('@opentelemetry/sdk-metrics');
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
@@ -49,9 +50,10 @@ const sdk = new NodeSDK({
 
   // --- Metrics (SỬA LỖI: Chỉ giữ lại 1 cái này thôi) ---
   metricReader: new PeriodicExportingMetricReader({
-    exporter: metricExporter,     // Sử dụng biến metricExporter đã khai báo ở trên
-    exportIntervalMillis: 5000,   // Gửi dữ liệu mỗi 5 giây (Rất quan trọng để test nhanh)
-  }),
+  // Sửa dòng này: Dùng ConsoleMetricExporter để in ra màn hình
+  exporter: new ConsoleMetricExporter(), 
+  exportIntervalMillis: 5000, 
+}),
 
   // --- Logs ---
   logRecordProcessor: new SimpleLogRecordProcessor(logExporter),
@@ -70,4 +72,4 @@ process.on('SIGTERM', () => {
   sdk.shutdown()
     .then(() => console.log('Observability terminated'))
     .finally(() => process.exit(0));
-});
+}); 
